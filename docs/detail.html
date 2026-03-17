@@ -41,32 +41,23 @@
       .detail-info {
         display: flex;
         gap: 12px;
-        align-items: flex-start;
-        padding: 0 16px 16px;
-        margin-bottom: 8px;
+        align-items: center;
+        padding: 16px;
       }
       .detail-avatar-wrap {
-        position: relative;
         flex-shrink: 0;
-        width: 80px;
-      }
-      .detail-avatar {
-        position: absolute;
-        top: -40px;
-        left: 0;
-        width: 80px;
-        height: 80px;
+        width: 72px;
+        height: 72px;
         border-radius: 50%;
         border: 3px solid #f7faff;
         overflow: hidden;
         background: #e5e7eb;
       }
-      .detail-avatar img {
+      .detail-avatar-wrap img {
         width: 100%; height: 100%; object-fit: cover; display: block;
       }
       .detail-meta {
         flex: 1;
-        padding-top: 8px;
       }
       .detail-meta h1 {
         margin: 0 0 6px;
@@ -141,6 +132,8 @@
   <body>
     <header class="header">
       <div class="nav">
+        <a id="home-link" class="nav-pill" href="./index.html" style="flex-shrink:0;font-weight:700;">🏠</a>
+        <div id="nav-links" class="nav-links"></div>
         <div class="lang">
           <button class="lang-btn" id="lang-btn" aria-label="Language">&#127760;</button>
           <div class="lang-dropdown" id="lang-dropdown">
@@ -174,9 +167,7 @@
       <section class="card section" style="margin-top:0;border-radius:0 0 5px 5px;">
         <div class="detail-info">
           <div class="detail-avatar-wrap">
-            <div class="detail-avatar">
-              <img id="avatar-img" src="" alt="" />
-            </div>
+            <img id="avatar-img" src="" alt="" />
           </div>
           <div class="detail-meta">
             <h1 id="game-title"></h1>

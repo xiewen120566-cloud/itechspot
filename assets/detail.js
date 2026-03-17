@@ -111,6 +111,23 @@ const main = async () => {
   );
 
   document.getElementById("logo-link") && (document.getElementById("logo-link").href = `./index.html?lang=${encodeURIComponent(lang)}`);
+  const homeLink = document.getElementById("home-link");
+  if (homeLink) homeLink.href = `./index.html?lang=${encodeURIComponent(lang)}`;
+
+  // 渲染分类导航
+  const navLinks = document.getElementById("nav-links");
+  if (navLinks) {
+    navLinks.innerHTML = "";
+    for (const c of categories) {
+      const a = el("a", {
+        class: "nav-pill",
+        href: `./index.html?lang=${encodeURIComponent(lang)}&category=${encodeURIComponent(c.alias)}`
+      });
+      a.textContent = c.name;
+      navLinks.appendChild(a);
+    }
+  }
+
   const langBtn = document.getElementById("lang-btn");
   const langDropdown = document.getElementById("lang-dropdown");
   if (langBtn && langDropdown) {
