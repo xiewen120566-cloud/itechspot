@@ -130,37 +130,38 @@ const loadData = async (lang) => {
 
 const renderHeader = (categories, lang, t) => {
   const navLinks = document.getElementById("nav-links");
-  navLinks.innerHTML = "";
-
-  const navLinksMobile = document.getElementById("nav-links-mobile");
-
-  const params = new URLSearchParams(location.search);
-  const active = params.get("category") || "";
-
-  for (const c of categories) {
-    const a = el("a", {
-      class: `nav-pill${active === c.alias ? " active" : ""}`,
-      href: `./index.html?lang=${encodeURIComponent(lang)}&category=${encodeURIComponent(c.alias)}`
-    });
-    a.textContent = c.name;
-    navLinks.appendChild(a);
-
-    if (navLinksMobile) {
-      const am = el("a", {
+  if (navLinks) {
+    navLinks.innerHTML = "";
+    const params = new URLSearchParams(location.search);
+    const active = params.get("category") || "";
+    for (const c of categories) {
+      const a = el("a", {
         class: `nav-pill${active === c.alias ? " active" : ""}`,
         href: `./index.html?lang=${encodeURIComponent(lang)}&category=${encodeURIComponent(c.alias)}`
       });
-      am.textContent = c.name;
-      navLinksMobile.appendChild(am);
+      a.textContent = c.name;
+      navLinks.appendChild(a);
     }
   }
 
-  const select = document.getElementById("lang-select");
-  select.value = lang;
-  select.addEventListener("change", () => setLang(select.value));
+  // 地球图标下拉菜单
+  const langBtn = document.getElementById("lang-btn");
+  const langDropdown = document.getElementById("lang-dropdown");
+  if (langBtn && langDropdown) {
+    // 标记当前语言
+    langDropdown.querySelectorAll(".lang-option").forEach((btn) => {
+      if (btn.dataset.lang === lang) btn.classList.add("active");
+      btn.addEventListener("click", () => setLang(btn.dataset.lang));
+    });
+    langBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      langDropdown.classList.toggle("open");
+    });
+    document.addEventListener("click", () => langDropdown.classList.remove("open"));
+  }
 
   const logo = document.getElementById("logo-link");
-  logo.href = `./index.html?lang=${encodeURIComponent(lang)}`;
+  if (logo) logo.href = `./index.html?lang=${encodeURIComponent(lang)}`;
 
   document.getElementById("page-title") && (document.getElementById("page-title").textContent = t("Common.Games", { category: t("Common.New") }));
 };
@@ -289,3 +290,20 @@ main().catch((e) => {
   const mount = document.getElementById("app-error");
   if (mount) mount.textContent = String(e && e.message ? e.message : e);
 });
+
+// 监听广告 unfilled 状态，自动隐藏空白容器
+(function () {
+  const observer = new MutationObserver(() => {
+    document.querySelectorAll(".ad-wrap ins[data-ad-status]").forEach((ins) => {
+      const wrap = ins.closest(".ad-wrap");
+      if (!wrap) return;
+      if (ins.getAttribute("data-ad-status") === "unfilled") {
+        wrap.style.display = "none";
+      } else {
+        wrap.style.display = "";
+        wrap.style.minHeight = "";
+      }
+    });
+  });
+  observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ["data-ad-status"] });
+})();

@@ -110,14 +110,24 @@ const main = async () => {
     12
   );
 
-  document.getElementById("logo-link").href = `./index.html?lang=${encodeURIComponent(lang)}`;
-  const select = document.getElementById("lang-select");
-  select.value = lang;
-  select.addEventListener("change", () => {
-    const p = new URLSearchParams(location.search);
-    p.set("lang", select.value);
-    location.search = p.toString();
-  });
+  document.getElementById("logo-link") && (document.getElementById("logo-link").href = `./index.html?lang=${encodeURIComponent(lang)}`);
+  const langBtn = document.getElementById("lang-btn");
+  const langDropdown = document.getElementById("lang-dropdown");
+  if (langBtn && langDropdown) {
+    langDropdown.querySelectorAll(".lang-option").forEach((btn) => {
+      if (btn.dataset.lang === lang) btn.classList.add("active");
+      btn.addEventListener("click", () => {
+        const p = new URLSearchParams(location.search);
+        p.set("lang", btn.dataset.lang);
+        location.search = p.toString();
+      });
+    });
+    langBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      langDropdown.classList.toggle("open");
+    });
+    document.addEventListener("click", () => langDropdown.classList.remove("open"));
+  }
 
   document.getElementById("game-title").textContent = game.name;
   document.getElementById("hero-img").setAttribute("src", game.image);
@@ -156,3 +166,19 @@ main().catch((e) => {
   const mount = document.getElementById("app-error");
   if (mount) mount.textContent = String(e && e.message ? e.message : e);
 });
+
+(function () {
+  const observer = new MutationObserver(() => {
+    document.querySelectorAll(".ad-wrap ins[data-ad-status]").forEach((ins) => {
+      const wrap = ins.closest(".ad-wrap");
+      if (!wrap) return;
+      if (ins.getAttribute("data-ad-status") === "unfilled") {
+        wrap.style.display = "none";
+      } else {
+        wrap.style.display = "";
+        wrap.style.minHeight = "";
+      }
+    });
+  });
+  observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ["data-ad-status"] });
+})();

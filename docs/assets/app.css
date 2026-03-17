@@ -26,31 +26,14 @@ a {
 .nav {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 12px 20px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 8px;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  transition: opacity 0.2s ease;
-}
-
-.logo:hover {
-  opacity: 0.8;
-}
-
-.logo img {
-  height: 44px;
-  width: auto;
-  display: block;
-}
-
-/* 桌面端分类导航 */
+/* 分类导航 — 直接在顶部 */
 .nav-links {
   display: flex;
   flex-wrap: wrap;
@@ -65,7 +48,7 @@ a {
   align-items: center;
   justify-content: center;
   height: 32px;
-  padding: 0 16px;
+  padding: 0 14px;
   border-radius: 6px;
   color: #cbd5e0;
   background: transparent;
@@ -74,47 +57,83 @@ a {
   font-weight: 500;
   transition: background 0.2s ease, color 0.2s ease;
   cursor: pointer;
+  text-decoration: none;
 }
 
-.nav-pill:hover {
-  background: rgba(255, 165, 0, 0.1);
-  color: #ed8936;
-}
-
+.nav-pill:hover,
 .nav-pill.active {
   background: rgba(255, 165, 0, 0.1);
   color: #ed8936;
 }
 
+/* 语言切换 — 地球图标按钮 */
 .lang {
-  display: inline-flex;
-  align-items: center;
+  position: relative;
   flex-shrink: 0;
 }
 
-.select {
-  height: 34px;
-  border: 1px solid #4a5568;
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
   border-radius: 8px;
-  padding: 0 10px;
-  font-size: 13px;
-  background: #4a5568;
-  color: #e2e8f0;
+  background: transparent;
+  border: none;
+  color: #cbd5e0;
   cursor: pointer;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
+  font-size: 20px;
+  transition: background 0.2s;
 }
 
-/* 移动端二级导航栏 */
+.lang-btn:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+.lang-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  min-width: 110px;
+  overflow: hidden;
+  z-index: 100;
+}
+
+.lang-dropdown.open {
+  display: block;
+}
+
+.lang-option {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  text-align: left;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: #1f2937;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.lang-option:hover {
+  background: #f3f4f6;
+}
+
+.lang-option.active {
+  color: #ed8936;
+  font-weight: 600;
+}
+
+/* 移动端二级导航栏 — 不再需要，隐藏 */
 .nav-mobile-bar {
   display: none;
-  justify-content: center;
-  padding: 6px 12px;
-  gap: 4px;
-  flex-wrap: wrap;
-  background: #3a4556;
-  border-top: 1px solid #4a5568;
 }
 
 /* ===== LAYOUT ===== */
@@ -320,7 +339,21 @@ a {
   font-size: 12px;
 }
 
-/* ===== INFO SECTION ===== */
+/* ===== 广告占位 — 防止加载时布局跳动 ===== */
+.ad-wrap {
+  min-height: 100px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.ad-wrap ins {
+  display: block;
+}
+
+/* unfilled 时隐藏整个广告容器 */
+.ad-wrap:has(ins[data-ad-status="unfilled"]) {
+  display: none;
+}
 .info {
   padding: 20px 16px 24px;
   background: transparent;
@@ -425,21 +458,6 @@ a {
 }
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 1024px) {
-  .nav-links {
-    display: none;
-  }
-  .nav-mobile-bar {
-    display: flex;
-  }
-}
-
-@media (min-width: 1025px) {
-  .nav-mobile-bar {
-    display: none;
-  }
-}
-
 @media (max-width: 768px) {
   .grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -447,10 +465,17 @@ a {
     padding: 0 12px 12px;
   }
   .nav {
-    padding: 10px 12px;
+    padding: 8px 12px;
   }
   .container {
     padding: 0 0 16px;
+  }
+  .nav-links {
+    gap: 2px;
+  }
+  .nav-pill {
+    padding: 0 10px;
+    font-size: 12px;
   }
 }
 
@@ -458,4 +483,15 @@ a {
   .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+/* ===== ADS ===== */
+.ad-wrap {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.ad-wrap:empty,
+.ad-wrap ins[data-ad-status="unfilled"] {
+  display: none;
 }

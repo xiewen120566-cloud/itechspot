@@ -130,10 +130,20 @@ const main = async () => {
   const game = games.find((g) => String(g.id) === String(id));
   if (!game) throw new Error("Not Found");
 
-  document.getElementById("logo-link").href = `./index.html?lang=${encodeURIComponent(lang)}`;
-  const select = document.getElementById("lang-select");
-  select.value = lang;
-  select.addEventListener("change", () => setLang(select.value));
+  document.getElementById("logo-link") && (document.getElementById("logo-link").href = `./index.html?lang=${encodeURIComponent(lang)}`);
+  const langBtn = document.getElementById("lang-btn");
+  const langDropdown = document.getElementById("lang-dropdown");
+  if (langBtn && langDropdown) {
+    langDropdown.querySelectorAll(".lang-option").forEach((btn) => {
+      if (btn.dataset.lang === lang) btn.classList.add("active");
+      btn.addEventListener("click", () => setLang(btn.dataset.lang));
+    });
+    langBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      langDropdown.classList.toggle("open");
+    });
+    document.addEventListener("click", () => langDropdown.classList.remove("open"));
+  }
 
   const category = categories.find((c) => String(c.id) === String(game.categoryId));
   document.getElementById("crumb").textContent = category ? `${t("Common.Category")}: ${category.name}` : "";
@@ -191,3 +201,19 @@ main().catch((e) => {
   const mount = document.getElementById("app-error");
   if (mount) mount.textContent = String(e && e.message ? e.message : e);
 });
+
+(function () {
+  const observer = new MutationObserver(() => {
+    document.querySelectorAll(".ad-wrap ins[data-ad-status]").forEach((ins) => {
+      const wrap = ins.closest(".ad-wrap");
+      if (!wrap) return;
+      if (ins.getAttribute("data-ad-status") === "unfilled") {
+        wrap.style.display = "none";
+      } else {
+        wrap.style.display = "";
+        wrap.style.minHeight = "";
+      }
+    });
+  });
+  observer.observe(document.body, { subtree: true, attributes: true, attributeFilter: ["data-ad-status"] });
+})();
