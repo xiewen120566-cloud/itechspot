@@ -162,7 +162,7 @@ const renderHeader = (categories, lang, t) => {
   const logo = document.getElementById("logo-link");
   logo.href = `./index.html?lang=${encodeURIComponent(lang)}`;
 
-  document.getElementById("page-title").textContent = t("Common.Games", { category: t("Common.New") });
+  document.getElementById("page-title") && (document.getElementById("page-title").textContent = t("Common.Games", { category: t("Common.New") }));
 };
 
 const renderHero = (games, lang) => {

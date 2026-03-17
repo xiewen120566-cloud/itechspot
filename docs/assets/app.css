@@ -101,6 +101,9 @@ a {
   background: #4a5568;
   color: #e2e8f0;
   cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 /* 移动端二级导航栏 */
