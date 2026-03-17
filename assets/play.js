@@ -171,21 +171,16 @@ const main = async () => {
     12
   );
   for (const g of related) {
+    const titleOverlay = el("div", { class: "game-title-overlay" });
+    titleOverlay.textContent = g.name;
     const card = el(
       "a",
       { class: "game", href: `./detail.html?lang=${encodeURIComponent(lang)}&id=${encodeURIComponent(g.id)}` },
       [
         el("div", { class: "game-thumb" }, [el("img", { src: g.image, alt: g.name, loading: "lazy" })]),
-        el("div", { class: "game-body" }, [
-          el("p", { class: "game-title" }),
-          el("p", { class: "game-desc" }),
-          el("a", { class: "btn primary", href: `./play.html?lang=${encodeURIComponent(lang)}&id=${encodeURIComponent(g.id)}` }),
-        ]),
+        titleOverlay,
       ]
     );
-    card.querySelector(".game-title").textContent = g.name;
-    card.querySelector(".game-desc").textContent = g.description || "";
-    card.querySelector(".btn.primary").textContent = t("Common.Play");
     grid.appendChild(card);
   }
 

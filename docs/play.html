@@ -23,6 +23,21 @@
         ttq.page();
       }(window, document, 'ttq');
     </script>
+    <style>
+      /* 推荐区多列网格 */
+      .recommend-grid {
+        padding: 0 16px 16px;
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 10px;
+      }
+      @media (max-width: 768px) {
+        .recommend-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+      }
+      @media (max-width: 480px) {
+        .recommend-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+      }
+    </style>
   </head>
   <body>
     <header class="header">
@@ -66,20 +81,20 @@
       </section>
 
       <section class="card section" style="padding:16px;">
-        <h3 id="desc-title" style="margin:0 0 6px;font-size:14px;font-weight:800;"></h3>
-        <p id="desc" style="margin:0;color:#374151;font-size:13px;line-height:1.55;"></p>
+        <h3 id="desc-title" style="margin:0 0 6px;font-size:14px;font-weight:800;color:#1f2937;"></h3>
+        <p id="desc" style="margin:0;color:#374151;font-size:13px;line-height:1.6;"></p>
         <div style="height:12px;"></div>
-        <h3 id="inst-title" style="margin:0 0 6px;font-size:14px;font-weight:800;"></h3>
-        <p id="inst" style="margin:0;color:#374151;font-size:13px;line-height:1.55;"></p>
+        <h3 id="inst-title" style="margin:0 0 6px;font-size:14px;font-weight:800;color:#1f2937;"></h3>
+        <p id="inst" style="margin:0;color:#374151;font-size:13px;line-height:1.6;"></p>
       </section>
 
       <section class="card section">
         <div class="section-head">
-          <div class="dot"></div>
+          <div class="section-line-left"></div>
           <h2 id="recommend-title" class="section-title"></h2>
           <div class="section-line"></div>
         </div>
-        <div id="recommend-grid" class="grid"></div>
+        <div id="recommend-grid" class="recommend-grid"></div>
       </section>
 
       <!-- Multiplex Ad -->

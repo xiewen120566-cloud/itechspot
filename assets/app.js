@@ -75,14 +75,9 @@ const gameCard = (game, t, lang) => {
   const thumb = el("div", { class: "game-thumb" }, [
     el("img", { src: game.image, alt: game.name, loading: "lazy" }),
   ]);
-  const title = el("p", { class: "game-title" });
-  title.textContent = game.name;
-  const desc = el("p", { class: "game-desc" });
-  desc.textContent = game.description || "";
-  const play = el("a", { class: "btn primary", href: `./play.html?lang=${encodeURIComponent(lang)}&id=${encodeURIComponent(game.id)}` });
-  play.textContent = t("Common.Play");
-  const body = el("div", { class: "game-body" }, [title, desc, play]);
-  const card = el("a", { class: "game", href: `./detail.html?lang=${encodeURIComponent(lang)}&id=${encodeURIComponent(game.id)}` }, [thumb, body]);
+  const titleOverlay = el("div", { class: "game-title-overlay" });
+  titleOverlay.textContent = game.name;
+  const card = el("a", { class: "game", href: `./detail.html?lang=${encodeURIComponent(lang)}&id=${encodeURIComponent(game.id)}` }, [thumb, titleOverlay]);
   return card;
 };
 
@@ -137,6 +132,8 @@ const renderHeader = (categories, lang, t) => {
   const navLinks = document.getElementById("nav-links");
   navLinks.innerHTML = "";
 
+  const navLinksMobile = document.getElementById("nav-links-mobile");
+
   const params = new URLSearchParams(location.search);
   const active = params.get("category") || "";
 
@@ -147,6 +144,15 @@ const renderHeader = (categories, lang, t) => {
     });
     a.textContent = c.name;
     navLinks.appendChild(a);
+
+    if (navLinksMobile) {
+      const am = el("a", {
+        class: `nav-pill${active === c.alias ? " active" : ""}`,
+        href: `./index.html?lang=${encodeURIComponent(lang)}&category=${encodeURIComponent(c.alias)}`
+      });
+      am.textContent = c.name;
+      navLinksMobile.appendChild(am);
+    }
   }
 
   const select = document.getElementById("lang-select");
@@ -156,7 +162,7 @@ const renderHeader = (categories, lang, t) => {
   const logo = document.getElementById("logo-link");
   logo.href = `./index.html?lang=${encodeURIComponent(lang)}`;
 
-  document.getElementById("page-title").textContent = t("Common.Games", { category: t("Common.New") });
+  document.getElementById("page-title") && (document.getElementById("page-title").textContent = t("Common.Games", { category: t("Common.New") }));
 };
 
 const renderHero = (games, lang) => {
@@ -178,9 +184,8 @@ const renderHero = (games, lang) => {
 
   let idx = 0;
   const rotate = () => {
-    const width = hero.clientWidth;
-    hero.scrollTo({ left: idx * width, behavior: "smooth" });
     idx = (idx + 1) % slides.length;
+    hero.style.transform = `translateX(-${idx * 100}%)`;
   };
   if (slides.length > 1) {
     setInterval(rotate, 4500);
@@ -190,12 +195,16 @@ const renderHero = (games, lang) => {
 const renderSection = (mountId, title, games, lang, t) => {
   const mount = document.getElementById(mountId);
   mount.innerHTML = "";
-  mount.appendChild(el("div", { class: "section-head" }, [
-    el("div", { class: "dot" }),
-    el("h2", { class: "section-title" }),
-    el("div", { class: "section-line" })
-  ]));
-  mount.querySelector(".section-title").textContent = title;
+  // next 风格：横线-标题-横线
+  const head = el("div", { class: "section-head" });
+  const lineLeft = el("div", { class: "section-line-left" });
+  const titleEl = el("h2", { class: "section-title" });
+  titleEl.textContent = title;
+  const lineRight = el("div", { class: "section-line" });
+  head.appendChild(lineLeft);
+  head.appendChild(titleEl);
+  head.appendChild(lineRight);
+  mount.appendChild(head);
   const grid = el("div", { class: "grid" });
   for (const g of games) grid.appendChild(gameCard(g, t, lang));
   mount.appendChild(grid);
@@ -211,17 +220,28 @@ const renderCategorySections = (categories, games, lang, t, hostname) => {
 
   for (const c of list) {
     const cg = games.filter((g) => String(g.categoryId) === String(c.id));
-    const pick = sample(cg, Math.min(12, cg.length));
+    const pick = sample(cg, Math.min(18, cg.length));
     const section = el("section", { class: "card section" });
-    const title = template(t("Common.Games", { category: c.name }), { category: c.name });
-    section.appendChild(el("div", { class: "section-head" }, [
-      el("div", { class: "dot" }),
-      el("h2", { class: "section-title" , html: "" }),
-      el("div", { class: "section-line" }),
-      el("a", { class: "nav-pill", href: `./index.html?lang=${encodeURIComponent(lang)}&category=${encodeURIComponent(c.alias)}` })
-    ]));
-    section.querySelector(".section-title").textContent = title;
-    section.querySelectorAll(".nav-pill")[section.querySelectorAll(".nav-pill").length - 1].textContent = t("Common.More");
+    const titleText = template(t("Common.Games", { category: c.name }), { category: c.name });
+
+    // next 风格标题：横线-标题-横线 + More 链接
+    const head = el("div", { class: "section-head" });
+    const lineLeft = el("div", { class: "section-line-left" });
+    const titleEl = el("h2", { class: "section-title" });
+    titleEl.textContent = titleText;
+    const lineRight = el("div", { class: "section-line" });
+    const moreLink = el("a", {
+      class: "nav-pill",
+      href: `./index.html?lang=${encodeURIComponent(lang)}&category=${encodeURIComponent(c.alias)}`,
+      style: "font-size:12px;opacity:0.75;font-weight:700;margin-left:12px;flex-shrink:0;"
+    });
+    moreLink.textContent = t("Common.More");
+    head.appendChild(lineLeft);
+    head.appendChild(titleEl);
+    head.appendChild(lineRight);
+    head.appendChild(moreLink);
+    section.appendChild(head);
+
     const grid = el("div", { class: "grid" });
     for (const g of pick) grid.appendChild(gameCard(g, t, lang));
     section.appendChild(grid);

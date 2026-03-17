@@ -122,6 +122,8 @@ const main = async () => {
   document.getElementById("game-title").textContent = game.name;
   document.getElementById("hero-img").setAttribute("src", game.image);
   document.getElementById("hero-img").setAttribute("alt", game.name);
+  const avatarImg = document.getElementById("avatar-img");
+  if (avatarImg) { avatarImg.setAttribute("src", game.image); avatarImg.setAttribute("alt", game.name); }
   document.getElementById("desc").textContent = game.description || "";
   document.getElementById("inst").textContent = game.instructions || "";
 
@@ -138,17 +140,12 @@ const main = async () => {
   const grid = document.getElementById("recommend-grid");
   grid.innerHTML = "";
   for (const g of related) {
+    const titleOverlay = el("div", { class: "game-title-overlay" });
+    titleOverlay.textContent = g.name;
     const card = el("a", { class: "game", href: `./detail.html?lang=${encodeURIComponent(lang)}&id=${encodeURIComponent(g.id)}` }, [
       el("div", { class: "game-thumb" }, [el("img", { src: g.image, alt: g.name, loading: "lazy" })]),
-      el("div", { class: "game-body" }, [
-        el("p", { class: "game-title", html: "" }),
-        el("p", { class: "game-desc", html: "" }),
-        el("a", { class: "btn primary", href: `./play.html?lang=${encodeURIComponent(lang)}&id=${encodeURIComponent(g.id)}` })
-      ])
+      titleOverlay
     ]);
-    card.querySelector(".game-title").textContent = g.name;
-    card.querySelector(".game-desc").textContent = g.description || "";
-    card.querySelector(".btn.primary").textContent = t("Common.Play");
     grid.appendChild(card);
   }
 
